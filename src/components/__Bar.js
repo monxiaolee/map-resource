@@ -3,10 +3,12 @@ var Config = require('../__Config');
 var Comment = require('./__Comment');
 var line = d3.line().curve(d3.curveCatmullRom).x(d => d[0]).y(d => d[1]);
 
+// 这儿是有问题的
 class Bar extends Comment {
 
     //设置柱状图
     setData(arr) {
+        debugger
         var self = this;
         Config.GLOBAL_SVG.selectAll('.v-bar').data([]).exit().remove();
         if (arr.length <= 0) {

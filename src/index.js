@@ -7,6 +7,7 @@ var MapBuilder = require('./__MapBuilder');
 
 //引用组件
 var EffectBar = require('./components/__Bar');
+
 var EffectLine = require('./components/__Line');
 var EffectPoint = require('./components/__Point');
 var EffectFly = require('./components/__Fly');
