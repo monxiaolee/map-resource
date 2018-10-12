@@ -1,6 +1,9 @@
 var __IDGEN = 100;
 
 class Comment{
+    constructor() {
+        
+    }
     resize(){
 
     }

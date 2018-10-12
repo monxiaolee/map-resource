@@ -5,15 +5,18 @@ var line = d3.line().curve(d3.curveCatmullRom).x(d => d[0]).y(d => d[1]);
 
 class Bar extends Comment {
 
+    constructor () {
+        super()
+    }
+
+
     //设置柱状图
     setData(arr) {
-        debugger
         var self = this;
         Config.GLOBAL_SVG.selectAll('.v-bar').data([]).exit().remove();
         if (arr.length <= 0) {
             return;
         }
-
 
         var min = _.minBy(arr, 'count').count;
         var max = _.maxBy(arr, 'count').count;
