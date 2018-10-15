@@ -1,7 +1,10 @@
+import * as d3 from 'd3'
 var Config = require('../__Config');
-var Comment = require('./__Comment');
+// var Comment = require('./__Comment');
+import Comment from './__Comment';
 var line = d3.line().curve(d3.curveCatmullRom).x(d => d[0]).y(d => d[1]);
 
+// class Line extends Comment
 class Line extends Comment {
 
     //添加一个区域到另外一个区域的线条组
@@ -75,4 +78,5 @@ class Line extends Comment {
 
 }
 
-module.exports = new Line();
+export default new Line();
+// module.exports = new Line();

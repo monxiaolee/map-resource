@@ -1,3 +1,4 @@
+import * as d3 from 'd3';
 const ZOOM = 48 * 0.9; //容器内缩放至 90%
 
 var CoordMap = {},

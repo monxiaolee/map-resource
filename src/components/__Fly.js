@@ -1,5 +1,7 @@
+import * as d3 from 'd3'
 var Config = require('../__Config');
-var Comment = require('./__Comment');
+// var Comment = require('./__Comment');
+import Comment from './__Comment';
 var line = d3.line().curve(d3.curveCatmullRom).x(d => d[0]).y(d => d[1]);
 
 class Fly extends Comment{
@@ -51,4 +53,4 @@ class Fly extends Comment{
 
 }
 
-module.exports = new Fly();
+export default new Fly();

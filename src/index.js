@@ -1,12 +1,16 @@
 require('./style.scss');
+import * as d3 from 'd3';
 var defs = require('./style.vue');
 
 var Config = require('./__Config');
-var Tip = require('./__Tip');
-var MapBuilder = require('./__MapBuilder');
+// let Tip = require('./__Tip');
+import Tip from './__Tip'
+// var MapBuilder = require('./__MapBuilder');
+import MapBuilder from './__MapBuilder'
 
 //引用组件
-var EffectBar = require('./components/__Bar');
+// var EffectBar = require('./components/__Bar');
+import EffectBar from './components/__Bar'
 
 var EffectLine = require('./components/__Line');
 var EffectPoint = require('./components/__Point');
@@ -129,12 +133,10 @@ class D3GeoMap {
             .text(d => d.properties.name);
 
         shapes.on('mouseover', function (d) {
-                var html = `
-                <h2 class="custom">${d.properties.name}</h2>
-            `;
-                Tip.showTooltip(html);
+                var html = `<h2 class="custom">${d.properties.name}</h2>`;
+                Tip.show(html);
             })
-            .on('mouseout', () => Tip.hideTooltip())
+            .on('mouseout', () => Tip.hide())
             .on('click', function (d) {
                 shapes.classed('v-item-selected', false);
                 d3.select(this).classed('v-item-selected', true);
@@ -239,15 +241,16 @@ class D3GeoMap {
         if (_.isString(target)) {
             var point = Config.GLOBAL_PROJECTION(Config.GLOBAL_BUILDER.getPoint(target));
             var offset = ROOT.getBoundingClientRect();
-            Tip.showToolTipByCoord(offset.x + point[0], offset.y + point[1] * PHEIGHT, html);
+            Tip.showBy(offset.x + point[0], offset.y + point[1] * PHEIGHT, html);
         } else {
-            Tip.showTooltip(html);
+            Tip.show(html);
         }
     }
     hideTip() {
-        Tip.hideTooltip();
+        Tip.hide();
     }
 
 }
 
-module.exports = D3GeoMap;
+// module.exports = D3GeoMap;
+export default D3GeoMap;

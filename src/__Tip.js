@@ -39,6 +39,7 @@ tooltip.style('position', 'fixed')
 
 
 var showTooltip = function (html) {
+    console.log("鼠标以上。。。")
     window.clearTimeout(PID);
     tooltip.html(html);
     tooltip.style('opacity', 1)
@@ -88,17 +89,9 @@ var hideTooltip = function (delay) {
     }, delay);
 };
 
-export default {
-    // show: showTooltip,
-    // hide: hideTooltip,
-    // showBy: showToolTipByCoord
-    showTooltip,
-    hideTooltip,
-    showToolTipByCoord
-};
 
-// exports default {
-//     show: showTooltip,
-//     hide: hideTooltip,
-//     showBy: showToolTipByCoord
-// };
+export default {
+    show: showTooltip,
+    hide: hideTooltip,
+    showBy: showToolTipByCoord
+}

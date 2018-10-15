@@ -1,5 +1,7 @@
+import * as d3 from 'd3'
 var Config = require('../__Config');
-var Comment = require('./__Comment');
+import Comment from './__Comment';
+// var Comment = require('./__Comment');
 
 class Point extends Comment{
 
@@ -36,4 +38,4 @@ class Point extends Comment{
 
 }
 
-module.exports = new Point();
+export default new Point();

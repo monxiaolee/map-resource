@@ -1,17 +1,14 @@
 import * as d3 from 'd3'
 var Config = require('../__Config');
-var Comment = require('./__Comment');
+import Comment from './__Comment';
 var line = d3.line().curve(d3.curveCatmullRom).x(d => d[0]).y(d => d[1]);
 
+// 这块继承的其实应该是Comment
 class Bar extends Comment {
-
-    constructor () {
-        super()
-    }
-
-
+    
     //设置柱状图
     setData(arr) {
+        console.log(arr)
         var self = this;
         Config.GLOBAL_SVG.selectAll('.v-bar').data([]).exit().remove();
         if (arr.length <= 0) {
@@ -65,5 +62,6 @@ class Bar extends Comment {
 
 }
 
-module.exports = new Bar();
+// module.exports = new Bar();
+export default new Bar();
 // export default { setData };

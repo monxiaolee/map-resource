@@ -2,6 +2,8 @@ import Vue from 'vue'
 import App from './App'
 import router from './router'
 
+let _ = require('lodash')
+
 // import * as d3 from 'd3'
 
 import '~/css/index.scss'
