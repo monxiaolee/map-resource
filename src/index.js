@@ -1,6 +1,10 @@
 require('./style.scss');
 import * as d3 from 'd3';
-var defs = require('./style.vue');
+// 原始引用方式
+// var defs = require('./style.vue');
+
+// import defs from './style.vue'
+
 
 var Config = require('./__Config');
 // let Tip = require('./__Tip');
@@ -12,9 +16,12 @@ import MapBuilder from './__MapBuilder'
 // var EffectBar = require('./components/__Bar');
 import EffectBar from './components/__Bar'
 
-var EffectLine = require('./components/__Line');
-var EffectPoint = require('./components/__Point');
-var EffectFly = require('./components/__Fly');
+// var EffectLine = require('./components/__Line');
+import EffectLine from './components/__Line'
+// var EffectPoint = require('./components/__Point');
+import EffectPoint from './components/__Point';
+// var EffectFly = require('./components/__Fly');
+import EffectFly from './components/__Fly'
 
 //地图变形变量,zoom时需要
 var __TRANSFORM = {x:0,y:0,k:0,ix:0,iy:0};
@@ -67,7 +74,6 @@ class D3GeoMap {
 
     constructor(json, element, config) {
         //自定义配置
-        console.log(json)
         Config.extend(config);
         [ROOT, WIDTH, HEIGHT] = [element, element.clientWidth, element.clientHeight];
         PHEIGHT = Math.cos(Math.PI * 2 * Config.RotateX / 360);
@@ -80,8 +86,11 @@ class D3GeoMap {
         Config.GLOBAL_SVG = Container.append('svg')
             .attr('width', WIDTH)
             .attr('height', THEIGHT);
-        Config.GLOBAL_SVG.append('defs').html(defs);
-        this._init(json);
+
+        // 把元素样式可以存放到一个指定的地方
+        // Config.GLOBAL_SVG.append('defs').html(defs);
+
+        this._init(json); 
     }
 
 

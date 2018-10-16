@@ -1,5 +1,6 @@
 import * as d3 from 'd3'
-var Config = require('../__Config');
+// var Config = require('../__Config');
+import Config from '../__Config'
 import Comment from './__Comment';
 var line = d3.line().curve(d3.curveCatmullRom).x(d => d[0]).y(d => d[1]);
 
