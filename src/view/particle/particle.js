@@ -1,8 +1,14 @@
 import * as THREE from 'three'
-import FBXLoader from '../../../lib/FBXLoader'
+// import FBXLoader from '../../../lib/FBXLoader'
+// console.log(FBXLoader)
 // import FBXLoader from 'threejs-fbxloader'
+import './FBXLoader'
+
+// import robot from '~/obj/robot.fbx'
 
 // FBXLoader(THREE)
+// console.log(robot)
+console.log(THREE.FBXLoader)
 
 class ThreeDWorld {
     constructor(canvasContainer) {
@@ -82,10 +88,11 @@ class ThreeDWorld {
     // 自定义模型加载
     loader(pathArr) {
         let jsonLoader = new THREE.JSONLoader();
-        // let fbxLoader = new THREE.FBXLoader();
         let fbxLoader = new THREE.FBXLoader();
-        let mtlLoader = new THREE.MTLLoader();
-        let objLoader = new THREE.OBJLoader();
+
+        // let fbxLoader = FBXLoader();
+        // let mtlLoader = new THREE.MTLLoader();
+        // let objLoader = new THREE.OBJLoader();
         let basePath, pathName, pathFomat;
         let promiseArr = pathArr.map((path) => {
             basePath = path.substring(0, path.lastIndexOf('/') + 1);
@@ -105,12 +112,13 @@ class ThreeDWorld {
                     });
                     break;
                 case 'fbx':
-                    return new Promise(function(resolve) {
-                        fbxLoader.load(path, (object) => {
-                            resolve(object);
-                        });
-                    });
+                    fbxLoader.load(path, object => {
+                        debugger
+                        console.log(object)
+                    })
+
                     break;
+
                 case 'obj':
                     return new Promise(function(resolve) {
                         objLoader.load(path, (object) => {
@@ -148,9 +156,19 @@ class ThreeDWorld {
 
     // 模型加入场景
     addObjs() {
-        this.loader(['../../../data/obj/robot.fbx', '../../../data/obj/Guitar/Guitar.fbx']).then((result) => {
-            console.log(result)
+
+        this.loader(['../../../data/obj/robot.fbx', '../../../data/obj/Guitar/Guitar.fbx']).then(result => {
+            console.log('执行了回调。。。')
         })
+
+        // this.loader(['../../../data/obj/robot.fbx', '../../../data/obj/Guitar/Guitar.fbx']).then((result) => {
+        //     console.log('执行到这儿了。。。')
+        //     console.log(result)
+        //     let robot = result[0].children[1].geometry;
+        //     let guitarObj = result[1].children[0].geometry;
+
+        //     console.log(robot)
+        // })
     }
 }
 export default ThreeDWorld;

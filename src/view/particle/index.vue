@@ -1,6 +1,6 @@
 <template>
 <div class="particle">
-  <h1>粒子效果测试</h1>
+  <!-- <h1>粒子效果测试</h1> -->
   <div id="world"></div>
 </div>
 </template>
@@ -24,4 +24,6 @@ export default {
   }
 }
 </script>
+
+
 
