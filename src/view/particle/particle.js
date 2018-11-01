@@ -1,14 +1,14 @@
 import * as THREE from 'three'
+import * as axios from 'axios'
 // import FBXLoader from '../../../lib/FBXLoader'
 // console.log(FBXLoader)
 // import FBXLoader from 'threejs-fbxloader'
-import './FBXLoader'
+// import './FBXLoader'
+// import './inflate.min'
 
-// import robot from '~/obj/robot.fbx'
+// import './FBXLoader1'
+import { OBJLoader } from './OBJLoader'
 
-// FBXLoader(THREE)
-// console.log(robot)
-console.log(THREE.FBXLoader)
 
 class ThreeDWorld {
     constructor(canvasContainer) {
@@ -88,7 +88,7 @@ class ThreeDWorld {
     // 自定义模型加载
     loader(pathArr) {
         let jsonLoader = new THREE.JSONLoader();
-        let fbxLoader = new THREE.FBXLoader();
+        // let fbxLoader = new THREE.FBXLoader();
 
         // let fbxLoader = FBXLoader();
         // let mtlLoader = new THREE.MTLLoader();
@@ -112,10 +112,19 @@ class ThreeDWorld {
                     });
                     break;
                 case 'fbx':
-                    fbxLoader.load(path, object => {
-                        debugger
-                        console.log(object)
-                    })
+
+                    return new Promise(resolve => {
+                        fbxLoader.load(path, (object) => {
+                            resolve(object);
+                        });
+                    });
+     
+                    // fbxLoader.load(path, (object) => {
+
+                    //     debugger
+                    //     console.log(object)
+                    //     resolve(object);
+                    // });
 
                     break;
 
@@ -157,18 +166,15 @@ class ThreeDWorld {
     // 模型加入场景
     addObjs() {
 
-        this.loader(['../../../data/obj/robot.fbx', '../../../data/obj/Guitar/Guitar.fbx']).then(result => {
-            console.log('执行了回调。。。')
-        })
+        // let fbxLoader = new THREE.FBXLoader();
+        let objLoader = new OBJLoader();
 
-        // this.loader(['../../../data/obj/robot.fbx', '../../../data/obj/Guitar/Guitar.fbx']).then((result) => {
-        //     console.log('执行到这儿了。。。')
-        //     console.log(result)
-        //     let robot = result[0].children[1].geometry;
-        //     let guitarObj = result[1].children[0].geometry;
+        console.log(objLoader)
+        
+        objLoader.load('../../../static/model/obj/obj.obj', (object) => {
+            console.log(object)
+        });
 
-        //     console.log(robot)
-        // })
     }
 }
 export default ThreeDWorld;
