@@ -173,6 +173,8 @@ export default {
     var test = new TestFunctions();
 
     d3.json("../../static/data/china.json").then((json) => {
+
+        console.log(json)
         json.features.map((item) => {
             AreaList.push(item.properties.name)
         })

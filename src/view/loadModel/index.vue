@@ -5,9 +5,11 @@
 </template>
 <script>
 import * as THREE from 'three'
-import * as TWEEN from "tween";
+// import * as TWEEN from "tween";
 import { OBJLoader } from '../particle/OBJLoader'
 // import '../particle/FBXLoader1'
+// import '../../../lib/three.min.js'
+
 export default {
   data() {
       return {
