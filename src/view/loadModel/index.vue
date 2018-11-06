@@ -19,7 +19,7 @@ export default {
   mounted() {
       let objLoader = new OBJLoader();
       console.log(objLoader)
-      objLoader.load("../../../static/model/obj/tree.obj", function() {
+      objLoader.load("../../../static/testObject/static/obj.obj", function() {
           console.log("执行回调了。。。")
       })
   },

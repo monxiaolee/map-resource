@@ -4,6 +4,8 @@ import HelloWorld from '@/components/HelloWorld'
 import d3Map01 from '@/view/d3Map01'
 import particle from '@/view/particle/index'
 import loadModel from '@/view/loadModel/index'
+// import pointAnimate from '@/view/pointAnimate/index'
+import modelParticle from '@/view/modelParticle/index'
 
 Vue.use(Router)
 
@@ -28,6 +30,16 @@ export default new Router({
       path: '/loadModel',
       name: 'loadModel',
       component: loadModel
+    },
+    // {
+    //   path: '/pointAnimate',
+    //   name: 'pointAnimate',
+    //   component: pointAnimate
+    // },
+    {
+      path: '/modelParticle',
+      name: 'modelParticle',
+      component: modelParticle
     }
   ]
 })

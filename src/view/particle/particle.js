@@ -1,9 +1,16 @@
 import * as THREE from 'three'
-import * as axios from 'axios'
+import TWEEN from 'tween'
+// import * as axios from 'axios'
 // import FBXLoader from '../../../lib/FBXLoader'
 // console.log(FBXLoader)
 // import FBXLoader from 'threejs-fbxloader'
-// import './FBXLoader'
+// FBXLoader(THREE)
+
+
+
+
+
+// import { FBXLoader } from './FBXLoader'
 // import './inflate.min'
 
 // import './FBXLoader1'
@@ -12,11 +19,23 @@ import { OBJLoader } from './OBJLoader'
 
 class ThreeDWorld {
     constructor(canvasContainer) {
-        // canvas 容器
-        this.container = canvasContainer || document.body
-
-        this.createScene()
-        this.addObjs()
+        // canvas容器
+        this.container = canvasContainer || document.body;
+        // 创建场景
+        this.createScene();
+        // 创建灯光
+        this.createLights();
+        // 性能监控插件
+        // this.initStats();
+        // 鼠标交互事件监听
+        // this.addMouseListener();
+        // 物体添加
+        // this.addObjs();
+        // 轨道控制插件（鼠标拖拽视角、缩放等）
+        // this.orbitControls = new THREE.OrbitControls(this.camera);
+        // this.orbitControls.autoRotate = true;
+        // 循环更新场景
+        // this.update();
     }
     createScene() {
         this.HEIGHT = window.innerHeight;
@@ -75,6 +94,43 @@ class ThreeDWorld {
         // console.log(this.HEIGHT, this.WIDTH, this.scene)
     }
 
+    createLights() {
+        // 户外光源
+        // 第一个参数是天空的颜色，第二个参数是地上的颜色，第三个参数是光源的强度
+        this.hemisphereLight = new THREE.HemisphereLight(0xaaaaaa, 0x000000, .9);
+
+        // 环境光源
+        this.ambientLight = new THREE.AmbientLight(0xdc8874, .2);
+
+        // 方向光是从一个特定的方向的照射
+        // 类似太阳，即所有光源是平行的
+        // 第一个参数是关系颜色，第二个参数是光源强度
+        this.shadowLight = new THREE.DirectionalLight(0xffffff, .9);
+
+        // 设置光源的方向。
+        this.shadowLight.position.set(50, 50, 50);
+
+        // 开启光源投影
+        this.shadowLight.castShadow = true;
+
+        // 定义可见域的投射阴影
+        this.shadowLight.shadow.camera.left = -400;
+        this.shadowLight.shadow.camera.right = 400;
+        this.shadowLight.shadow.camera.top = 400;
+        this.shadowLight.shadow.camera.bottom = -400;
+        this.shadowLight.shadow.camera.near = 1;
+        this.shadowLight.shadow.camera.far = 1000;
+
+        // 定义阴影的分辨率；虽然分辨率越高越好，但是需要付出更加昂贵的代价维持高性能的表现。
+        this.shadowLight.shadow.mapSize.width = 2048;
+        this.shadowLight.shadow.mapSize.height = 2048;
+
+        // 为了使这些光源呈现效果，只需要将它们添加到场景中
+        this.scene.add(this.hemisphereLight);
+        this.scene.add(this.shadowLight);
+        this.scene.add(this.ambientLight);
+    }
+
     handleWindowResize() {
         // 更新渲染器的高度和宽度以及相机的纵横比
         this.HEIGHT = window.innerHeight;
@@ -88,11 +144,11 @@ class ThreeDWorld {
     // 自定义模型加载
     loader(pathArr) {
         let jsonLoader = new THREE.JSONLoader();
-        // let fbxLoader = new THREE.FBXLoader();
+        // let fbxLoader = new FBXLoader();
 
         // let fbxLoader = FBXLoader();
         // let mtlLoader = new THREE.MTLLoader();
-        // let objLoader = new THREE.OBJLoader();
+        let objLoader = new OBJLoader();
         let basePath, pathName, pathFomat;
         let promiseArr = pathArr.map((path) => {
             basePath = path.substring(0, path.lastIndexOf('/') + 1);
@@ -113,11 +169,11 @@ class ThreeDWorld {
                     break;
                 case 'fbx':
 
-                    return new Promise(resolve => {
-                        fbxLoader.load(path, (object) => {
-                            resolve(object);
-                        });
-                    });
+                    // return new Promise(resolve => {
+                    //     fbxLoader.load(path, (object) => {
+                    //         resolve(object);
+                    //     });
+                    // });
      
                     // fbxLoader.load(path, (object) => {
 
@@ -163,18 +219,168 @@ class ThreeDWorld {
         return Promise.all(promiseArr);
     }
 
+   
+
     // 模型加入场景
     addObjs() {
 
         // let fbxLoader = new THREE.FBXLoader();
-        let objLoader = new OBJLoader();
+        // let objLoader = new OBJLoader();
 
-        console.log(objLoader)
+        this.loader(['../../../static/obj/Guitar/Guitar.fbx', '../../../static/obj/Guitar/Guitar.fbx']).then((result) => {
+            // console.log(result)
+
+            let robot = result[0].children[0].geometry;
+            let guitarObj = result[1].children[0].geometry;
+            guitarObj.scale(1.5, 1.5, 1.5);
+            guitarObj.rotateX(-Math.PI / 2);
+            robot.scale(0.08, 0.08, 0.08);
+            robot.rotateX(-Math.PI / 2);
+            this.addPartices(robot, guitarObj);
+
+            // this.scene.add(result);
+        })
         
-        objLoader.load('../../../static/model/obj/obj.obj', (object) => {
-            console.log(object)
-        });
+        // objLoader.load('../../../static/obj/tree/obj.obj', (object) => {
+        //     console.log(object)
+        // });
 
     }
+
+    // 几何模型转缓存几何模型
+    toBufferGeometry(geometry) {
+        if (geometry.type === 'BufferGeometry') return geometry;
+        return new THREE.BufferGeometry().fromGeometry(geometry);
+    }
+
+    addPartices(obj1, obj2) {
+        obj1 = this.toBufferGeometry(obj1);
+        obj2 = this.toBufferGeometry(obj2);
+        let moreObj = obj1
+        let lessObj = obj2;
+        // 找到顶点数量较多的模型
+        if (obj2.attributes.position.array.length > obj1.attributes.position.array.length) {
+            [moreObj, lessObj] = [lessObj, moreObj];
+        }
+        let morePos = moreObj.attributes.position.array;
+        let lessPos = lessObj.attributes.position.array;
+        let moreLen = morePos.length;
+        let lessLen = lessPos.length;
+        // 根据最大的顶点数开辟数组空间，同于存放顶点较少的模型顶点数据
+        let position2 = new Float32Array(moreLen);
+        // 先把顶点较少的模型顶点坐标放进数组
+        position2.set(lessPos);
+        // 剩余空间重复赋值
+        for (let i = lessLen, j = 0; i < moreLen; i++, j++) {
+            j %= lessLen;
+            position2[i] = lessPos[j];
+            position2[i + 1] = lessPos[j + 1];
+            position2[i + 2] = lessPos[j + 2];
+        }
+        // sizes用来控制每个顶点的尺寸，初始为4
+        let sizes = new Float32Array(moreLen);
+        for (let i = 0; i < moreLen; i++) {
+            sizes[i] = 4;
+        }
+        // 挂载属性值
+        moreObj.addAttribute('size', new THREE.BufferAttribute(sizes, 1));
+        moreObj.addAttribute('position2', new THREE.BufferAttribute(position2, 3));
+        // 传递给shader共享的的属性值
+        let uniforms = {
+            // 顶点颜色
+            color: {
+                type: 'v3',
+                value: new THREE.Color(0xffffff)
+            },
+            // 传递顶点贴图
+            texture: {
+                value: this.getTexture(64)
+            },
+            // 传递val值，用于shader计算顶点位置
+            val: {
+                value: 1.0
+            }
+        };
+        // 着色器材料
+        let shaderMaterial = new THREE.ShaderMaterial({
+            uniforms: uniforms,
+            vertexShader: document.getElementById('vertexshader').textContent,
+            fragmentShader: document.getElementById('fragmentshader').textContent,
+            blending: THREE.AdditiveBlending,
+            depthTest: false,
+            transparent: true
+        });
+        // 创建粒子系统
+        let particleSystem = new THREE.Points(moreObj, shaderMaterial);
+        let pos = {
+            val: 1
+        };
+        // 粒子动画
+        let tween = new TWEEN.Tween(pos).to({
+            val: 0
+        }, 1500).easing(TWEEN.Easing.Quadratic.InOut).delay(2000).onUpdate(updateCallback).onComplete(completeCallBack.bind(pos, 'go'));
+        let tweenBack = new TWEEN.Tween(pos).to({
+            val: 1
+        }, 1500).easing(TWEEN.Easing.Quadratic.InOut).delay(2000).onUpdate(updateCallback).onComplete(completeCallBack.bind(pos, 'back'));
+        tween.chain(tweenBack);
+        tweenBack.chain(tween);
+        tween.start();
+        // 动画持续更新的回调函数
+        function updateCallback() {
+            particleSystem.material.uniforms.val.value = this.val;
+            // 颜色过渡
+            if (this.nextcolor) {
+                let val = this.order === 'back' ? (1 - this.val) : this.val;
+                let uColor = particleSystem.material.uniforms.color.value;
+                uColor.r = this.color.r + (this.nextcolor.r - this.color.r) * val;
+                uColor.b = this.color.b + (this.nextcolor.b - this.color.b) * val;
+                uColor.g = this.color.g + (this.nextcolor.g - this.color.g) * val;
+            }
+        }
+        // 每轮动画完成时的回调函数
+        function completeCallBack(order) {
+            let uColor = particleSystem.material.uniforms.color.value;
+            // 保存动画顺序状态
+            this.order = order;
+            // 保存旧的粒子颜色
+            this.color = {
+                r: uColor.r,
+                b: uColor.b,
+                g: uColor.g
+            }
+            // 随机生成将要变换后的粒子颜色
+            this.nextcolor = {
+                r: Math.random(),
+                b: Math.random(),
+                g: Math.random()
+            }
+        }
+        console.log('------------------------')
+        console.log(particleSystem)
+        this.scene.add(particleSystem);
+        this.particleSystem = particleSystem;
+    }
+
+    getTexture(canvasSize = 64) {
+        let canvas = document.createElement('canvas');
+        canvas.width = canvasSize;
+        canvas.height = canvasSize;
+        canvas.style.background = "transparent";
+        let context = canvas.getContext('2d');
+        let gradient = context.createRadialGradient(canvas.width / 2, canvas.height / 2, canvas.width / 8, canvas.width / 2, canvas.height / 2, canvas.width / 2);
+        gradient.addColorStop(0, '#fff');
+        gradient.addColorStop(1, 'transparent');
+        context.fillStyle = gradient;
+        context.beginPath();
+        context.arc(canvas.width / 2, canvas.height / 2, canvas.width / 2, 0, Math.PI * 2, true);
+        context.fill();
+        let texture = new THREE.Texture(canvas);
+        texture.needsUpdate = true;
+        return texture;
+    }
+
+
+
+
 }
 export default ThreeDWorld;
