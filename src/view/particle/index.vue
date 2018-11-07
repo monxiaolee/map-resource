@@ -7,23 +7,21 @@
 </div>
 </template>
 <script>
-import ThreeDWorld from './particle'
+// import ThreeDWorld from './particle'
 
 export default {
   name: 'particle',
   data() {
-      return {
-
-      }
-  },
-  mounted() {
-    this.init()
-  },
-  methods: {
-    init() {
-      new ThreeDWorld(document.getElementById("world"))
-    }
+      return {}
   }
+  // mounted() {
+  //   this.init()
+  // },
+  // methods: {
+  //   init() {
+  //     new ThreeDWorld(document.getElementById("world"))
+  //   }
+  // }
 }
 </script>
 
