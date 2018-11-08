@@ -15,16 +15,21 @@ export default {
     name: "modelParticle",
     data() {
         return {
-
+            particleSystem: {}
         }
     },
     mounted() {
+        // window.requestAnimationFrame(() => {
+        //     this.init()
+        // })
         this.init()
+        
     },
     methods: {
         init() {
+
             var self = this;
-            
+ 
             var WIDTH = window.innerWidth;
             var HEIGHT = window.innerHeight;
             var container = document.getElementById('container');
@@ -50,23 +55,18 @@ export default {
                 self.resize();
             }, false);
 
-
-
             self.scene = scene;
             self.camera = camera;
             self.renderer = renderer;
 
-            console.log(scene)
-            console.log(camera)
-
-
-            // TWEEN.update();
-            // stats.update();
-            // self.update();
-            
-            renderer.render(scene, camera);
+            TWEEN.update();
+            stats.update();
+            self.update();
             
             // window.requestAnimationFrame(arguments.callee)
+            window.requestAnimationFrame(() => {
+                window.requestAnimationFrame()
+            })
 
         },
         addObjs() {
@@ -99,9 +99,8 @@ export default {
         },
 
         addPartice(obj1, obj2) {
-
             var moreObj, lessObj;
-            var particleSystem;
+            let particleSystem;
             var tween, tweenBack;
             if(obj1.vertices.length > obj2.vertices.length) {
                 moreObj = obj1;
@@ -160,8 +159,9 @@ export default {
             }
 
             this.scene.add(particleSystem);
-
             this.particleSystem = particleSystem;
+            // console.log(this.particleSystem)
+
         },
 
         resize() {
@@ -172,14 +172,14 @@ export default {
         },
         update(time) {
 
-            // this.renderer.render(this.scene, this.camera);
             var time = Date.now() * 0.005;
+
             console.log(this.particleSystem)
 
             if(this.particleSystem) {
 
-                console.log('测试有没有走到这儿。。。')
                 var bufferObj = this.particleSystem.geometry;
+                console.log(bufferObj)
                 this.particleSystem.rotation.y = 0.01 * time;
 
                 var sizes = bufferObj.attributes.size.array;
