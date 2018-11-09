@@ -8,6 +8,7 @@ import * as THREE from 'three'
 import TWEEN from 'tween'
 import Stats from 'stats.js'
 
+// webGL
 // let scene = new THREE.Scene();
 // var renderer, scene, camera, stats, tween;
 
@@ -63,8 +64,8 @@ export default {
             stats = new Stats()
             container.appendChild(stats.dom)
             
-            window.addEventListener( 'resize', function(e){
-                this.resize();
+            window.addEventListener( 'resize', (e) => {
+                this.resize()
             }, false);
 
             this.scene = scene;
@@ -74,14 +75,18 @@ export default {
 
             TWEEN.update();
             stats.update();
-            this.update();
+            // this.update();
 
-            window.requestAnimationFrame(() => {
-                window.requestAnimationFrame()
-            })
-            
+            // window.requestAnimationFrame(() => {
+            //     console.log('111111')
+            // })
+
+        
 
         },
+
+
+
         addObjs() {
             let loader = new THREE.JSONLoader();
 
@@ -172,6 +177,10 @@ export default {
             this.particleSystem = particleSystem;
             console.log(this.particleSystem)            
             // console.log(this.particleSystem)
+            this.update()
+            // requestAnimationFrame(() => {
+            //     this.update()
+            // })
 
         },
 
@@ -182,6 +191,7 @@ export default {
             this.renderer.setSize(window.innerWidth, window.innerHeight);
         },
         update(time) {
+            TWEEN.update();
 
             var time = Date.now() * 0.005;
 
@@ -194,16 +204,20 @@ export default {
                 this.particleSystem.rotation.y = 0.01 * time;
 
                 let sizes = bufferObj.attributes.size.array;
+
                 let len = sizes.length;
 
-                for (var i = 0; i < len; i++) {
+                for (let i = 0; i < len; i++) {
                     sizes[i] = 2 * (1.0 + Math.sin(0.02 * i + time));
                 }
 
                 bufferObj.attributes.size.needsUpdate = true;
             }
-
             this.renderer.render(this.scene, this.camera);
+
+            requestAnimationFrame(() => {
+                this.update()
+            })
         }
     }
 }
