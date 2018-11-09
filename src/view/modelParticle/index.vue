@@ -9,13 +9,18 @@ import TWEEN from 'tween'
 import Stats from 'stats.js'
 
 // let scene = new THREE.Scene();
-var renderer, scene, camera, stats, tween;
-stats = new Stats();
+// var renderer, scene, camera, stats, tween;
+
 export default {
     name: "modelParticle",
     data() {
         return {
-            particleSystem: {}
+            particleSystem: {},
+            renderer: {},
+            scene: {},
+            camera: {},
+            stats: {},
+            tween: {}
         }
     },
     created() {
@@ -30,23 +35,24 @@ export default {
     },
     methods: {
         init() {
+            
+            // var self = this;
+            let renderer, scene, camera, stats, tween;
+            let WIDTH = window.innerWidth;
 
-            var self = this;
- 
-            var WIDTH = window.innerWidth;
-            var HEIGHT = window.innerHeight;
-            var container = document.getElementById('container');
+            let HEIGHT = window.innerHeight;
+            let container = document.getElementById('container');
             camera = new THREE.PerspectiveCamera( 40, WIDTH/HEIGHT, 1, 10000 );
             camera.position.z = 150;
 
             scene = new THREE.Scene();
             
             // 添加灯光
-            var light = new THREE.DirectionalLight( 0xffffff );
+            let light = new THREE.DirectionalLight( 0xffffff );
             light.position.set( 0, 200, 0 );
             scene.add( light );
 
-            self.addObjs();
+            this.addObjs();
 
             renderer = new THREE.WebGLRenderer();
             renderer.setPixelRatio(window.devicePixelRatio);
@@ -54,35 +60,32 @@ export default {
 
             container.appendChild(renderer.domElement)
 
+            stats = new Stats()
+            container.appendChild(stats.dom)
+            
             window.addEventListener( 'resize', function(e){
-                self.resize();
+                this.resize();
             }, false);
 
-            self.scene = scene;
-            self.camera = camera;
-            self.renderer = renderer;
+            this.scene = scene;
+            this.camera = camera;
+            this.renderer = renderer;
+
 
             TWEEN.update();
             stats.update();
-            self.update();
+            this.update();
 
             window.requestAnimationFrame(() => {
                 window.requestAnimationFrame()
             })
             
-            // window.requestAnimationFrame(arguments.callee)
-
-            // window.requestAnimationFrame(() => {
-            //     window.requestAnimationFrame()
-            // })
 
         },
         addObjs() {
+            let loader = new THREE.JSONLoader();
 
-            var self = this;
-            var loader = new THREE.JSONLoader();
-
-            var obj1, obj2, loaded;
+            let obj1, obj2, loaded;
             loader.load('../../../static/modelParticle/cpmovie4.json', (obj) => {
                 // console.log(obj)
                 obj.applyMatrix(new THREE.Matrix4().makeRotationX(Math.PI/2));
@@ -92,7 +95,7 @@ export default {
                 obj1 = obj;
                 if(obj1 && obj2 && !loaded) {
                     loaded = true;
-                    self.addPartice(obj1, obj2);
+                    this.addPartice(obj1, obj2);
                 }
                 
             })
@@ -101,15 +104,14 @@ export default {
                 obj2 = obj;
                 if(obj1 && obj2 && !loaded) {
                     loaded = true;
-                    self.addPartice(obj1, obj2);
+                    this.addPartice(obj1, obj2);
                 }
             });	
         },
 
         addPartice(obj1, obj2) {
-            var moreObj, lessObj;
-            let particleSystem;
-            var tween, tweenBack;
+            let moreObj, lessObj;
+
             if(obj1.vertices.length > obj2.vertices.length) {
                 moreObj = obj1;
                 lessObj = obj2;
@@ -119,32 +121,32 @@ export default {
             }
             moreObj = new THREE.BufferGeometry().fromGeometry(moreObj);
             lessObj = new THREE.BufferGeometry().fromGeometry(lessObj);
-            var morePos = moreObj.attributes.position.array;
-            var lessPos = lessObj.attributes.position.array;
-            var moreLen = morePos.length;
-            var lessLen = lessPos.length;
-            var position2 = new Float32Array(moreLen);
+            let morePos = moreObj.attributes.position.array;
+            let lessPos = lessObj.attributes.position.array;
+            let moreLen = morePos.length;
+            let lessLen = lessPos.length;
+            let position2 = new Float32Array(moreLen);
             position2.set(lessPos);
-            for(var i = lessLen, j = 0; i < moreLen; i++, j++) {
+            for(let i = lessLen, j = 0; i < moreLen; i++, j++) {
                 j %= lessLen;
                 position2[i] = lessPos[j];
                 position2[i+1] = lessPos[j+1];
                 position2[i+2] = lessPos[j+2];
             }
 
-            var sizes = new Float32Array(moreLen);
-            for (var i = 0; i < moreLen; i++) {
+            let sizes = new Float32Array(moreLen);
+            for (let i = 0; i < moreLen; i++) {
                 sizes[i] = 4;
             }
             moreObj.addAttribute('size', new THREE.BufferAttribute(sizes, 1));
             moreObj.addAttribute('position2', new THREE.BufferAttribute(position2, 3));
-            var uniforms = {
+            let uniforms = {
                 color:{value: new THREE.Color(0xffffff)},
                 texture:{value: new THREE.TextureLoader().load( "../../../static/modelParticle/dot.png")},
                 val: {value: 1.0}
             };
 
-            var shaderMaterial = new THREE.ShaderMaterial({
+            let shaderMaterial = new THREE.ShaderMaterial({
                 uniforms:       uniforms,
                 vertexShader:   document.getElementById('vertexshader').textContent,
                 fragmentShader: document.getElementById('fragmentshader').textContent,
@@ -152,12 +154,12 @@ export default {
                 depthTest:      false,
                 transparent:    true
             });
-            particleSystem = new THREE.Points(moreObj, shaderMaterial);
+            let particleSystem = new THREE.Points(moreObj, shaderMaterial);
             particleSystem.position.y = -15;
 
-            var pos = {val: 1};
-            tween = new TWEEN.Tween(pos).to({val: 0}, 2000).easing(TWEEN.Easing.Quadratic.InOut).delay(1000).onUpdate(callback);
-            tweenBack = new TWEEN.Tween(pos).to({val: 1}, 2000).easing(TWEEN.Easing.Quadratic.InOut).delay(1000).onUpdate(callback);
+            let pos = {val: 1};
+            let tween = new TWEEN.Tween(pos).to({val: 0}, 2000).easing(TWEEN.Easing.Quadratic.InOut).delay(1000).onUpdate(callback);
+            let tweenBack = new TWEEN.Tween(pos).to({val: 1}, 2000).easing(TWEEN.Easing.Quadratic.InOut).delay(1000).onUpdate(callback);
             tween.chain(tweenBack);
             tweenBack.chain(tween);
             tween.start();
@@ -166,31 +168,33 @@ export default {
                 particleSystem.material.uniforms.val.value = this.val;
             }
 
-            scene.add(particleSystem);
+            this.scene.add(particleSystem);
             this.particleSystem = particleSystem;
-            console.log(this.particleSystem)
+            console.log(this.particleSystem)            
+            // console.log(this.particleSystem)
 
         },
 
         resize() {
-            camera.aspect = window.innerWidth/window.innerHeight;
-            camera.updateProjectionMatrix();
+            this.camera.aspect = window.innerWidth/window.innerHeight;
+            this.camera.updateProjectionMatrix();
 
-            renderer.setSize(window.innerWidth, window.innerHeight);
+            this.renderer.setSize(window.innerWidth, window.innerHeight);
         },
         update(time) {
 
             var time = Date.now() * 0.005;
 
+            // console.log(this.particleSystem)
             console.log(this.particleSystem)
 
             if(this.particleSystem) {
 
-                var bufferObj = this.particleSystem.geometry;
+                let bufferObj = this.particleSystem.geometry;
                 this.particleSystem.rotation.y = 0.01 * time;
 
-                var sizes = bufferObj.attributes.size.array;
-                var len = sizes.length;
+                let sizes = bufferObj.attributes.size.array;
+                let len = sizes.length;
 
                 for (var i = 0; i < len; i++) {
                     sizes[i] = 2 * (1.0 + Math.sin(0.02 * i + time));
