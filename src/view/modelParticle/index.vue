@@ -18,6 +18,9 @@ export default {
             particleSystem: {}
         }
     },
+    created() {
+        // this.init()
+    },
     mounted() {
         // window.requestAnimationFrame(() => {
         //     this.init()
@@ -62,11 +65,16 @@ export default {
             TWEEN.update();
             stats.update();
             self.update();
-            
-            // window.requestAnimationFrame(arguments.callee)
+
             window.requestAnimationFrame(() => {
                 window.requestAnimationFrame()
             })
+            
+            // window.requestAnimationFrame(arguments.callee)
+
+            // window.requestAnimationFrame(() => {
+            //     window.requestAnimationFrame()
+            // })
 
         },
         addObjs() {
@@ -89,7 +97,7 @@ export default {
                 
             })
 
-            loader.load('../../../static/modelParticle/teapot.js', function(obj) {
+            loader.load('../../../static/modelParticle/teapot.js', (obj) => {
                 obj2 = obj;
                 if(obj1 && obj2 && !loaded) {
                     loaded = true;
@@ -158,9 +166,9 @@ export default {
                 particleSystem.material.uniforms.val.value = this.val;
             }
 
-            this.scene.add(particleSystem);
+            scene.add(particleSystem);
             this.particleSystem = particleSystem;
-            // console.log(this.particleSystem)
+            console.log(this.particleSystem)
 
         },
 
@@ -179,7 +187,6 @@ export default {
             if(this.particleSystem) {
 
                 var bufferObj = this.particleSystem.geometry;
-                console.log(bufferObj)
                 this.particleSystem.rotation.y = 0.01 * time;
 
                 var sizes = bufferObj.attributes.size.array;
