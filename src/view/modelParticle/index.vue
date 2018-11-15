@@ -89,7 +89,7 @@ export default {
                 
             })
 
-            loader.load('../../../static/modelParticle/teapot.js', function(obj) {
+            loader.load('../../../static/modelParticle/teapot.js', (obj) => {
                 obj2 = obj;
                 if(obj1 && obj2 && !loaded) {
                     loaded = true;
@@ -100,7 +100,7 @@ export default {
 
         addPartice(obj1, obj2) {
             var moreObj, lessObj;
-            let particleSystem;
+            var particleSystem;
             var tween, tweenBack;
             if(obj1.vertices.length > obj2.vertices.length) {
                 moreObj = obj1;
@@ -160,7 +160,9 @@ export default {
 
             this.scene.add(particleSystem);
             this.particleSystem = particleSystem;
-            // console.log(this.particleSystem)
+            
+            console.log('+++++++++++++++++++++++++++')
+            console.log(this.particleSystem)
 
         },
 
@@ -173,13 +175,13 @@ export default {
         update(time) {
 
             var time = Date.now() * 0.005;
-
+            console.log('---------------------------')
             console.log(this.particleSystem)
 
             if(this.particleSystem) {
 
                 var bufferObj = this.particleSystem.geometry;
-                console.log(bufferObj)
+
                 this.particleSystem.rotation.y = 0.01 * time;
 
                 var sizes = bufferObj.attributes.size.array;
