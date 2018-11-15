@@ -6,6 +6,7 @@ import d3Map01 from '@/view/d3Map01'
 // import loadModel from '@/view/loadModel/index'
 // import pointAnimate from '@/view/pointAnimate/index'
 import modelParticle from '@/view/modelParticle/index'
+import topo from '@/view/topo/index'
 
 Vue.use(Router)
 
@@ -40,6 +41,11 @@ export default new Router({
       path: '/modelParticle',
       name: 'modelParticle',
       component: modelParticle
+    },
+    {
+      path: '/topo',
+      name: 'topo',
+      component: topo
     }
   ]
 })
